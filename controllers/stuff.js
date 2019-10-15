@@ -44,6 +44,9 @@ exports.modifyThing = (req, res, next) => {
     if (req.file) {
         const url = req.protocol + '://' + req.get('host');
         req.body.thing = JSON.parse(req.body.thing);
+
+        obrisiSliku(req.params.id);
+
         thing = {
             _id: req.params.id,
             title: req.body.thing.title,
@@ -108,5 +111,18 @@ exports.getAllStuff = (req, res, next) => {
             res.status(400).json({
                 error
             });
+        });
+};
+
+
+const obrisiSliku = (id) => {
+    Thing.findOne({
+        '_id': id
+    }).then((thing) => {
+        const filename = thing.imageUrl.split('/images/')[1];
+        fs.unlinkSync(`images/${filename}`);
+    })
+        .catch((error) => {
+            console.log(`Ovo je gresk: ${error}`);
         });
 };
