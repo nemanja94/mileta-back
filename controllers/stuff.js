@@ -1,7 +1,7 @@
 const Thing = require('../models/thing');
 const fs = require('fs');
 
-exports.createThing = (req, res, next) => {
+exports.createThing = (req, res) => {
     req.body.thing = JSON.parse(req.body.thing);
     const url = req.protocol + '://' + req.get('host');
     const thing = new Thing({
@@ -9,7 +9,9 @@ exports.createThing = (req, res, next) => {
         description: req.body.thing.description,
         imageUrl: url + '/images/' + req.file.filename,
         price: req.body.thing.price,
-        userId: req.body.thing.userId
+        userId: req.body.thing.userId,
+        tip: req.body.thing.tip,
+        poreklo: req.body.thing.poreklo
     });
     thing.save().then(
         () => {
@@ -26,7 +28,7 @@ exports.createThing = (req, res, next) => {
     );
 };
 
-exports.getOneThing = (req, res, next) => {
+exports.getOneThing = (req, res) => {
     Thing.findOne({
         '_id': req.params.id
     }).then((thing) => {
@@ -39,7 +41,7 @@ exports.getOneThing = (req, res, next) => {
         });
 };
 
-exports.modifyThing = (req, res, next) => {
+exports.modifyThing = (req, res) => {
     let thing = new Thing({ _id: req.params._id });
     if (req.file) {
         const url = req.protocol + '://' + req.get('host');
@@ -53,7 +55,9 @@ exports.modifyThing = (req, res, next) => {
             description: req.body.thing.description,
             imageUrl: url + '/images/' + req.file.filename,
             price: req.body.thing.price,
-            userId: req.body.thing.userId
+            userId: req.body.thing.userId,
+            tip: req.body.thing.tip,
+            poreklo: req.body.thing.poreklo
         };
     } else {
         thing = {
@@ -62,7 +66,9 @@ exports.modifyThing = (req, res, next) => {
             description: req.body.description,
             imageUrl: req.body.imageUrl,
             price: req.body.price,
-            userId: req.body.userId
+            userId: req.body.userId,
+            tip: req.body.tip,
+            poreklo: req.body.poreklo
         };
     }
     Thing.updateOne({ _id: req.params.id }, thing).then(
@@ -80,7 +86,7 @@ exports.modifyThing = (req, res, next) => {
     );
 };
 
-exports.deleteThing = (req, res, next) => {
+exports.deleteThing = (req, res) => {
     Thing.findOne({ _id: req.params.id }).then(
         (thing) => {
             const filename = thing.imageUrl.split('/images/')[1];
@@ -103,8 +109,30 @@ exports.deleteThing = (req, res, next) => {
     );
 };
 
-exports.getAllStuff = (req, res, next) => {
+exports.getAllStuff = (req, res) => {
     Thing.find().then((things) => {
+        res.status(200).json(things);
+    })
+        .catch((error) => {
+            res.status(400).json({
+                error
+            });
+        });
+};
+
+exports.getAllGranit = (req, res) => {
+    Thing.find({ "tip": "Granit" }).then((things) => {
+        res.status(200).json(things);
+    })
+        .catch((error) => {
+            res.status(400).json({
+                error
+            });
+        });
+};
+
+exports.getAllMermer = (req, res) => {
+    Thing.find({ "tip": "Mermer" }).then((things) => {
         res.status(200).json(things);
     })
         .catch((error) => {

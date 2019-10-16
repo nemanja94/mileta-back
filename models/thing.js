@@ -5,8 +5,9 @@ const thingSchema = mongoose.Schema({
 	'description': { 'type': String, 'required': true },
 	'imageUrl': { 'type': String, 'required': true },
 	'userId': { 'type': String, 'required': true },
-	'price': { 'type': Number, 'required': true }
-	// 'type': { type: String, required: true }
+	'price': { 'type': Number, 'required': true },
+	'tip': { type: String, required: true },
+	'poreklo': { type: String, required: true }
 });
 
 module.exports = mongoose.model('Thing', thingSchema);
