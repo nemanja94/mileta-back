@@ -3,7 +3,7 @@ const fs = require('fs');
 
 exports.createThing = (req, res) => {
     req.body.thing = JSON.parse(req.body.thing);
-    const url = req.protocol + '://' + req.get('host');
+    const url = 'https://' + req.get('host');
     const thing = new Thing({
         title: req.body.thing.title,
         description: req.body.thing.description,
